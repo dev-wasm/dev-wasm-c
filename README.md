@@ -23,7 +23,11 @@ Visual studio should prompt you to see if you want to relaunch the workspace in 
 # Building and Running
 
 ```sh
-./build.sh
+# compile C
+clang -o main.wasm main.c
 wasmtime main.wasm
+
+# compile C++
+clang++ -o main-cc.wasm main.cc
 wasmtime main-cc.wasm
 ```
