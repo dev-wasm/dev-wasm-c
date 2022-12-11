@@ -22,6 +22,7 @@ Visual studio should prompt you to see if you want to relaunch the workspace in 
 
 # Building and Running
 
+## Basic example
 ```sh
 # compile C
 clang -o main.wasm main.c
@@ -30,4 +31,14 @@ wasmtime main.wasm
 # compile C++
 clang++ -o main-cc.wasm main.cc
 wasmtime main-cc.wasm
+```
+
+## Web serving with WAGI
+
+```sh
+clang -o wagi.wasm wagi.c
+
+clang++ -o wagi-cc.wasm wagi.cc -fno-exceptions
+
+wagi --config wagi.toml
 ```

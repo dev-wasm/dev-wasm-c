@@ -1,0 +1,7 @@
+[[module]]
+route = "/c/..."
+module = "wagi.wasm"
+
+[[module]]
+route = "/..."
+module = "wagi-cc.wasm"
