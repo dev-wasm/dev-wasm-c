@@ -11,15 +11,13 @@ class QueryParams {
         QueryParams(const std::string& querystring) {
             std::size_t last = 0;
             std::size_t pos = querystring.find("&");
-            do {
-                std::string elt = querystring.substr(last, pos-last);
-                fprintf(stderr, "FOO: %s\n", elt.c_str());
-                std::size_t eq_pos = elt.find("=");
-                params.insert(make_pair(elt.substr(0, eq_pos), elt.substr(eq_pos + 1)));
-                fprintf(stderr, "Insert: %s %s\n", elt.substr(0, eq_pos).c_str(), elt.substr(eq_pos + 1).c_str());
+            while (pos != std::string::npos)
+            {
+                this->addKey(querystring.substr(last, pos-last));
                 last = pos + 1;
                 pos = querystring.find("&", last);
-            } while (pos != std::string::npos);
+            }
+            this->addKey(querystring.substr(last));
         }
 
         const char* value(const std::string& name) {
@@ -27,6 +25,12 @@ class QueryParams {
                 return params.find(name)->second.c_str();
             }
             return NULL;
+        }
+
+    private:
+        void addKey(const std::string& elt) {
+            std::size_t eq_pos = elt.find("=");
+            params.insert(make_pair(elt.substr(0, eq_pos), elt.substr(eq_pos + 1)));
         }
 };
 
