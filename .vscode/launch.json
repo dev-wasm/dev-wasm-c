@@ -1,0 +1,17 @@
+{
+    "configurations": [
+        {
+            "name": "WASM-C Launch",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "/root/.wasmtime/bin/wasmtime",
+            "args": [
+                "-g",
+                "main.wasm",
+                "--dir",
+                "."
+            ],
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}
