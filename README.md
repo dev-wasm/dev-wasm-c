@@ -42,3 +42,34 @@ clang++ -o wagi-cc.wasm wagi.cc -fno-exceptions
 
 wagi --config wagi.toml
 ```
+
+# Debugging
+The easiest way to debug is to just add breakpoints and click on the launch icon, which will launch
+the VS Code debugger.
+
+## Command line
+If you want to debug in the command line you can do the following:
+```sh
+lldb wasmtime -- -g main.wasm --dir .
+(lldb) target create "wasmtime"
+Current executable set to 'wasmtime' (x86_64).
+(lldb) settings set -- target.run-args  "-g" "main.wasm" "--dir" "."
+(lldb) settings set target.disable-aslr false  # This is needed to debug inside an un-privileged container
+(lldb) b main.c:28
+Breakpoint 1: no locations (pending).
+WARNING:  Unable to resolve breakpoint to any actual locations.
+(lldb) run
+Process 11490 launched: '/root/.wasmtime/bin/wasmtime' (x86_64)
+1 location added to breakpoint 1
+Process 11490 stopped
+* thread #1, name = 'wasmtime', stop reason = breakpoint 1.1
+    frame #0: 0x00007f0440e952c0 JIT(0x5624884a01d0)`main at main.c:28:13
+   25  
+   26   int main()
+   27   {
+-> 28       fprintf(stdout, "Hello C World!\n");
+   29  
+   30       FILE *f = fopen("test.txt", "w+");
+   31       if (!f) {
+(lldb)
+```
