@@ -1,0 +1,38 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build WASM-c",
+            "type": "shell",
+            "command": "clang -g -o main.wasm main.c",
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        },
+        {
+            "label": "Build WASM-c++",
+            "type": "shell",
+            "command": "clang++ -g -o main-cc.wasm main.cc",
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        },
+        {
+            "label": "Build",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "dependsOn": [
+                "Build WASM-c",
+                "Build WASM-c++"
+            ]
+        }
+    ]
+}
