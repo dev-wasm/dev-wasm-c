@@ -1,6 +1,4 @@
 {
-    // See https://go.microsoft.com/fwlink/?LinkId=733558
-    // for the documentation about the tasks.json format
     "version": "2.0.0",
     "tasks": [
         {
@@ -9,8 +7,8 @@
             "command": "clang -g -o main.wasm main.c",
             "group": "build",
             "presentation": {
-                "reveal": "always",
-                "panel": "new"
+                "reveal": "never",
+                "panel": "shared"
             }
         },
         {
@@ -19,8 +17,28 @@
             "command": "clang++ -g -o main-cc.wasm main.cc",
             "group": "build",
             "presentation": {
-                "reveal": "always",
-                "panel": "new"
+                "reveal": "never",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Build WASM/WAGI-c",
+            "type": "shell",
+            "command": "clang -g -o wagi.wasm webserver/wagi.c",
+            "group": "build",
+            "presentation": {
+                "reveal": "never",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Build WASM/WAGI-c++",
+            "type": "shell",
+            "command": "clang++ -g -o wagi-cc.wasm webserver/wagi.cc -fno-exceptions",
+            "group": "build",
+            "presentation": {
+                "reveal": "never",
+                "panel": "shared"
             }
         },
         {
@@ -31,7 +49,9 @@
             },
             "dependsOn": [
                 "Build WASM-c",
-                "Build WASM-c++"
+                "Build WASM-c++",
+                "Build WASM/WAGI-c",
+                "Build WASM/WAGI-c++"
             ]
         }
     ]

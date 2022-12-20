@@ -27,10 +27,10 @@ int main(int argc, char**argv)
     const char* query = getenv("QUERY_STRING");
     char* name = get_query_string("name", query);
     if (name != NULL) {
-        fprintf(stdout, "<body><h3>Hello Cpp %s!</h3></body>", name);
+        fprintf(stdout, "<body><h3>Hello C %s!</h3></body>", name);
     }
     else {
-        fprintf(stdout, "<body><h3>Hello Cpp Unknown!</h3></body>");
+        fprintf(stdout, "<body><h3>Hello C Unknown!</h3></body>");
     }
     free(name);
 }

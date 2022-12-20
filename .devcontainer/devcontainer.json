@@ -4,5 +4,14 @@
         "dockerfile": "Dockerfile",
         "context": ".."
     },
-    "remoteEnv": { "PATH": "${containerEnv:PATH}:/wasi-sdk-17.0/bin" }
+	"remoteEnv": {
+		"PATH": "${containerEnv:PATH}:/wasi-sdk-17.0/bin"
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-vscode.cpptools-extension-pack"
+			]
+		}
+	}
 }

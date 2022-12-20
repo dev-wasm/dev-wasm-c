@@ -35,13 +35,18 @@ wasmtime main-cc.wasm
 
 ## Web serving with WAGI
 
+There is a simple example of web serving via WebAssembly + CGI (WAGI) in
+the `webserver` directory. It uses the lighttpd web server and `mod_cgi`.
+See the `webserver/lighttpd.conf` file for more details.
+
 ```sh
-clang -o wagi.wasm wagi.c
+clang -o wagi.wasm webserver/wagi.c
+clang++ -o wagi-cc.wasm webserver/wagi.cc -fno-exceptions
 
-clang++ -o wagi-cc.wasm wagi.cc -fno-exceptions
-
-wagi --config wagi.toml
+lighttpd -D -f webserver/lighttpd.conf
 ```
+
+Once the server is running, VS Code or Codespaces should prompt you to connect to the open port.
 
 # Debugging
 The easiest way to debug is to just add breakpoints and click on the launch icon, which will launch

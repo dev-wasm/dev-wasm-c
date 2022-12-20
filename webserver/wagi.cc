@@ -44,5 +44,5 @@ int main(int argc, char**argv)
     if (name == NULL) {
         name = "unknown";
     }
-    fprintf(stdout, "<body><h3>Hello %s</h3></body>", name);
+    fprintf(stdout, "<body><h3>Hello C++ %s</h3></body>", name);
 }
