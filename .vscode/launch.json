@@ -7,12 +7,20 @@
             "program": "/root/.wasmtime/bin/wasmtime",
             "args": [
                 "-g",
-                "main.wasm",
+                "/workspaces/dev-wasm-c/main.wasm",
                 "--dir",
                 "."
             ],
             "cwd": "${workspaceFolder}",
-            "preLaunchTask": "Build WASM-c"
+            "preLaunchTask": "Build WASM-c",
+            "MIMode": "lldb",
+            "setupCommands": [
+                {
+                    "description": "Disable ASLR which requires a privileged container",
+                    "text": "settings set target.disable-aslr false",
+                    "ignoreFailures": false
+                }
+            ]
         },
         {
             "name": "WASM-C++ Launch",
@@ -21,11 +29,19 @@
             "program": "/root/.wasmtime/bin/wasmtime",
             "args": [
                 "-g",
-                "main-cc.wasm",
+                "/workspaces/dev-wasm-c/main-cc.wasm",
                 "--dir",
                 "."
             ],
             "cwd": "${workspaceFolder}",
+            "MIMode": "lldb",
+            "setupCommands": [
+                {
+                    "description": "Disable ASLR which requires a privileged container",
+                    "text": "settings set target.disable-aslr false",
+                    "ignoreFailures": false
+                }
+            ],
             "preLaunchTask": "Build WASM-c++"
         }
     ]
