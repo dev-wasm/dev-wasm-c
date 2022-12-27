@@ -1,3 +1,3 @@
-FROM brendanburns/wasm-dev-base:0.0.6
+FROM brendanburns/wasm-dev-base:0.0.7
 
 
