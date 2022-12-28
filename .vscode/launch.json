@@ -1,6 +1,34 @@
 {
     "configurations": [
         {
+            "name": "WASM-C Launch (gdb)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "/root/.wasmtime/bin/wasmtime",
+            "args": [
+                "-g",
+                "main.wasm",
+                "--dir",
+                "."
+            ],
+            "cwd": "${workspaceFolder}",
+            "preLaunchTask": "Build WASM-c"
+        },
+        {
+            "name": "WASM-C++ Launch (gdb)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "/root/.wasmtime/bin/wasmtime",
+            "args": [
+                "-g",
+                "main-cc.wasm",
+                "--dir",
+                "."
+            ],
+            "cwd": "${workspaceFolder}",
+            "preLaunchTask": "Build WASM-c++"
+        },
+        {
             "name": "WASM-C Launch",
             "type": "cppdbg",
             "request": "launch",
