@@ -48,6 +48,10 @@ lighttpd -D -f webserver/lighttpd.conf
 
 Once the server is running, VS Code or Codespaces should prompt you to connect to the open port.
 
+## Http client example
+There is a more complicated example in the [`http` directory](./http/) which shows an example 
+of making an HTTP client call using the experimental wasi+http support in [`wasmtime-http`](https://github.com/brendandburns/wasmtime).
+
 # Debugging
 The easiest way to debug is to just add breakpoints and click on the launch icon, which will launch
 the VS Code debugger.
