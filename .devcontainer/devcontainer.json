@@ -6,8 +6,9 @@
     },
     "features": {
         "devwasm.azurecr.io/dev-wasm/dev-wasm-feature/wasmtime-wasi:0.0.7": {
-            "version": "17"
-        }
+            "version": "20"
+        },
+        "ghcr.io/devcontainers/features/common-utils": {}
     },
     "customizations": {
         "vscode": {
