@@ -26,11 +26,17 @@ Visual studio should prompt you to see if you want to relaunch the workspace in 
 ```sh
 # compile C
 clang -o main.wasm main.c
+# this fails, because directories/files aren't accesible by default
 wasmtime main.wasm
+# this works
+wasmtime --dir . main.wasm
 
 # compile C++
 clang++ -o main-cc.wasm main.cc
+# this fails, because directories/files aren't accesible by default
 wasmtime main-cc.wasm
+# this works
+wasmtime --dir . main-cc.wasm
 ```
 
 ## Web serving with WAGI
