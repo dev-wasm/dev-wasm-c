@@ -1,6 +1,6 @@
 {
     "name": "C/C++ WASM",
-    "image": "ubuntu/jammy",
+    "image": "ubuntu:jammy",
     "remoteEnv": {
 	"PATH": "${containerEnv:PATH}:/usr/local/lib/wasi-sdk-20.0/bin"
     },
