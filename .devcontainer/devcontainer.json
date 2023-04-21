@@ -1,11 +1,11 @@
 {
     "name": "C/C++ WASM",
-    "image": "brendanburns/wasm-dev-base:0.0.7",
+    "image": "ubuntu/jammy",
     "remoteEnv": {
-	"PATH": "${containerEnv:PATH}:/usr/local/lib/wasi-sdk-17.0/bin"
+	"PATH": "${containerEnv:PATH}:/usr/local/lib/wasi-sdk-20.0/bin"
     },
     "features": {
-        "devwasm.azurecr.io/dev-wasm/dev-wasm-feature/wasmtime-wasi:0.0.4": {
+        "devwasm.azurecr.io/dev-wasm/dev-wasm-feature/wasmtime-wasi:0.0.6": {
             "version": "17"
         }
     },
