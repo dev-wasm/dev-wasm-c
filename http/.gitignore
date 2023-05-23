@@ -1,0 +1,4 @@
+proxy.c
+proxy.h
+*.o
+wasi-http
