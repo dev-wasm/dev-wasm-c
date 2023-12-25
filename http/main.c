@@ -1,9 +1,5 @@
-#include "proxy.h"
+#include "client.h"
 #include <stdio.h>
-
-void exports_wasi_http_0_2_0_rc_2023_11_10_incoming_handler_handle(exports_wasi_http_0_2_0_rc_2023_11_10_incoming_handler_own_incoming_request_t request, exports_wasi_http_0_2_0_rc_2023_11_10_incoming_handler_own_response_outparam_t response_out) {
-    // required for linking but not used.
-}
 
 int request(uint8_t method_tag, uint8_t scheme_tag, const char * authority_str, const char* path_query_str, const char* body) {
     wasi_http_0_2_0_rc_2023_11_10_types_tuple2_field_key_field_value_t content_type[] = {{
@@ -26,9 +22,9 @@ int request(uint8_t method_tag, uint8_t scheme_tag, const char * authority_str, 
     }
     wasi_http_0_2_0_rc_2023_11_10_types_method_t method = { .tag = method_tag };
     wasi_http_0_2_0_rc_2023_11_10_types_scheme_t scheme = { .tag = scheme_tag };
-    proxy_string_t path_query, authority;
-    proxy_string_set(&path_query, (char*) path_query_str);
-    proxy_string_set(&authority, (char *) authority_str);
+    client_string_t path_query, authority;
+    client_string_set(&path_query, (char*) path_query_str);
+    client_string_set(&authority, (char *) authority_str);
 
     wasi_http_0_2_0_rc_2023_11_10_types_own_outgoing_body_t out_body;
 

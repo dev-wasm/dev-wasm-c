@@ -1,4 +1,4 @@
-proxy.c
-proxy.h
+client.c
+client.h
 *.o
 wasi-http

@@ -10,5 +10,6 @@ make main.wasm
 
 ## Running
 ```sh
-make run
+make clean; make run
 ```
+
