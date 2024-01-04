@@ -39,6 +39,26 @@ wasmtime main-cc.wasm
 wasmtime --dir . main-cc.wasm
 ```
 
+## Http
+There is a more complicated example in the [`http` directory](./http/) which shows an example 
+of making an HTTP client call and an HTTP server using the experimental 
+[wasi-http](https://github.com/WebAssembly/wasi-http).
+
+### HTTP Client
+```sh
+# See http/main.c for the code
+cd http
+make run
+```
+
+### HTTP Server
+```sh
+# see http/server.c for the code
+cd http
+make run-server
+```
+
+
 ## Web serving with WAGI
 
 There is a simple example of web serving via WebAssembly + CGI (WAGI) in
@@ -53,10 +73,6 @@ lighttpd -D -f webserver/lighttpd.conf
 ```
 
 Once the server is running, VS Code or Codespaces should prompt you to connect to the open port.
-
-## Http client example
-There is a more complicated example in the [`http` directory](./http/) which shows an example 
-of making an HTTP client call using the experimental wasi+http support in [`wasmtime-http`](https://github.com/brendandburns/wasmtime).
 
 # Debugging
 The easiest way to debug is to just add breakpoints and click on the launch icon, which will launch

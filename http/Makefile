@@ -6,7 +6,7 @@ default: main.wasm
 
 wasi-http: ; git clone https://github.com/WebAssembly/wasi-http; cd wasi-http; git checkout v0.2.0-rc-2023-11-10 ; cp ../client.wit wit/client.wit
 
-gen: wasi-http ; wit-bindgen c ${PWD}/wasi-http/wit -w client
+gen: wasi-http ; wit-bindgen c ${PWD}/wasi-http/wit -w client ; wit-bindgen c ${PWD}/wasi-http/wit -w proxy
 
 main.wasm: gen ; ${cc} client.c main.c -o main.wasm
 
@@ -19,3 +19,11 @@ main_2023_11_10.component.wasm: main_2023_11_10.embed.wasm wasi_snapshot_preview
 clean: ; rm -f client.c client_component_type.o client.h *.wasm; rm -r wasi-http
 
 run: main_2023_11_10.component.wasm ; wasmtime -S http --wasm component-model main_2023_11_10.component.wasm
+
+server.wasm: gen ; ${cc} proxy.c server.c -o server.wasm
+
+server_2023_11_10.embed.wasm: server.wasm ; wasm-tools component embed ./wasi-http/wit server.wasm -o server_2023_11_10.embed.wasm -w proxy
+
+server_2023_11_10.component.wasm: server_2023_11_10.embed.wasm wasi_snapshot_preview1.reactor.wasm; wasm-tools component new server_2023_11_10.embed.wasm -o server_2023_11_10.component.wasm --adapt wasi_snapshot_preview1.reactor.wasm
+
+run-server: server_2023_11_10.component.wasm ; wasmtime serve server_2023_11_10.component.wasm
