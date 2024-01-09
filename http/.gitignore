@@ -3,4 +3,5 @@ client.h
 proxy.c
 proxy.h
 *.o
+*.a
 wasi-http
