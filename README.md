@@ -39,7 +39,7 @@ wasmtime main-cc.wasm
 wasmtime --dir . main-cc.wasm
 ```
 
-## Http
+## HTTP
 There is a more complicated example in the [`http` directory](./http/) which shows an example 
 of making an HTTP client call and an HTTP server using the experimental 
 [wasi-http](https://github.com/WebAssembly/wasi-http).
@@ -51,25 +51,27 @@ cd http
 make run
 ```
 
-### HTTP Server
+### Web serving with WASI-HTTP
 ```sh
 # see http/server.c for the code
 cd http
 make run-server
 ```
 
+Once the server is running, VS Code or Codespaces should prompt you to connect to the open port.
 
-## Web serving with WAGI
+
+### Web serving with WAGI
 
 There is a simple example of web serving via WebAssembly + CGI (WAGI) in
-the `webserver` directory. It uses the lighttpd web server and `mod_cgi`.
-See the `webserver/lighttpd.conf` file for more details.
+the `http/wagi` directory. It uses the lighttpd web server and `mod_cgi`.
+See the `http/wagi/lighttpd.conf` file for more details.
 
 ```sh
-clang -o wagi.wasm webserver/wagi.c
-clang++ -o wagi-cc.wasm webserver/wagi.cc -fno-exceptions
+clang -o wagi.wasm http/wagi/wagi.c
+clang++ -o wagi-cc.wasm http/wagi/wagi.cc -fno-exceptions
 
-lighttpd -D -f webserver/lighttpd.conf
+lighttpd -D -f http/wagi/lighttpd.conf
 ```
 
 Once the server is running, VS Code or Codespaces should prompt you to connect to the open port.
@@ -81,7 +83,7 @@ the VS Code debugger.
 ## Command line
 If you want to debug in the command line you can do the following:
 ```sh
-lldb wasmtime -- -g main.wasm --dir .
+lldb wasmtime -- --dir . -g main.wasm 
 (lldb) target create "wasmtime"
 Current executable set to 'wasmtime' (x86_64).
 (lldb) settings set -- target.run-args  "-g" "main.wasm" "--dir" "."
