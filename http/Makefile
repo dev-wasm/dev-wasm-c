@@ -1,14 +1,22 @@
 cc := /usr/local/lib/wasi-sdk-20.0/bin/clang
+lib_objs := client.o wasi_http.o
 
 .phony: gen clean run
 
 default: main.wasm
 
+%.o : %.c
+	@echo "Compiling c file into o file"
+	${cc} -c $< -o $@
+
+libwasihttp.a: ${lib_objs}
+	ar r libwasihttp.a ${lib_objs}
+
 wasi-http: ; git clone https://github.com/WebAssembly/wasi-http; cd wasi-http; git checkout v0.2.0-rc-2023-11-10 ; cp ../client.wit wit/client.wit
 
 gen: wasi-http ; wit-bindgen c ${PWD}/wasi-http/wit -w client ; wit-bindgen c ${PWD}/wasi-http/wit -w proxy
 
-main.wasm: gen ; ${cc} client.c main.c -o main.wasm
+main.wasm: gen main.o libwasihttp.a; ${cc} main.o -L. -lwasihttp -o main.wasm
 
 main_2023_11_10.embed.wasm: main.wasm ; wasm-tools component embed ./wasi-http/wit main.wasm -o main_2023_11_10.embed.wasm -w client
 
@@ -16,7 +24,7 @@ wasi_snapshot_preview1.reactor.wasm: ; wget https://github.com/bytecodealliance/
 
 main_2023_11_10.component.wasm: main_2023_11_10.embed.wasm wasi_snapshot_preview1.reactor.wasm; wasm-tools component new main_2023_11_10.embed.wasm -o main_2023_11_10.component.wasm --adapt wasi_snapshot_preview1.reactor.wasm
 
-clean: ; rm -f client.c client_component_type.o client.h proxy.h proxy.c *.wasm; rm -rf wasi-http
+clean: ; rm -f client.c client_component_type.o client.h proxy.h proxy.c *.wasm *.a; rm -rf wasi-http
 
 run: main_2023_11_10.component.wasm ; wasmtime -S http --wasm component-model main_2023_11_10.component.wasm
 
