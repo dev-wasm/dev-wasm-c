@@ -14,6 +14,13 @@
 #define HTTPS WASI_HTTP_0_2_0_RC_2023_11_10_TYPES_SCHEME_HTTPS
 #define HTTP WASI_HTTP_0_2_0_RC_2023_11_10_TYPES_SCHEME_HTTP
 
+
+typedef struct {
+    const char* authority;
+    const char* path_query;
+    const char* body;
+} wasi_http_request_t;
+
 typedef struct {
     char *name;
     char *value;
@@ -37,6 +44,9 @@ typedef struct {
     // and must be freed to prevent a leak.
     header_list_t headers;    
 } wasi_http_response_t;
+
+typedef void (*handler_func)(wasi_http_request_t* req, wasi_http_response_t *res);
+extern handler_func handler;
 
 void free_response(wasi_http_response_t* response);
 int wasi_http_request(uint8_t method_tag, uint8_t scheme_tag, const char * authority_str, const char* path_query_str, const char* body, wasi_http_response_t *response_out);

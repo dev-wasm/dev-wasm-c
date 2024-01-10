@@ -20,6 +20,12 @@ world client {
   /// HTTP request (e.g., via `fetch()`).
   import outgoing-handler;
 
+  /// The host delivers incoming HTTP requests to a component by calling the
+  /// `handle` function of this exported interface. A host may arbitrarily reuse
+  /// or not reuse component instance when delivering incoming HTTP requests and
+  /// thus a component must be able to handle 0..N calls to `handle`.
+  export incoming-handler;
+
   // The 'main' hook for the CLI
   export wasi:cli/run@0.2.0-rc-2023-11-10;
 }
