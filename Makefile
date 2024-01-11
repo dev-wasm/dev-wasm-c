@@ -20,3 +20,10 @@ all: run_c run_cc
 
 clean:
 	rm -f main.wasm main-cc.wasm test.txt test2.txt test-cc.txt test-cc-2.txt
+
+check: all
+	ls test.txt > /dev/null
+	ls test2.txt > /dev/null
+	ls test-cc.txt > /dev/null
+	ls test-cc-2.txt > /dev/null
+	ls foo.txt > /dev/null
