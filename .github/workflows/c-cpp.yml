@@ -11,6 +11,7 @@ jobs:
     - name: install wasmtime
       run: |
         INSTALLER=./wasmtime-install.sh
+        WASMTIME_VERSION=v15.0.1
         curl https://wasmtime.dev/install.sh -L --output ${INSTALLER}
         chmod a+x ${INSTALLER}
         ${INSTALLER} --version ${WASMTIME_VERSION}
