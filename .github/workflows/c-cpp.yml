@@ -8,8 +8,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: make
-      run: make
     - name: install wasmtime
       run: |
         INSTALLER=./wasmtime-install.sh
@@ -21,5 +19,7 @@ jobs:
       run: |
         curl https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-20/wasi-sdk-20.0-linux.tar.gz -L --output wasi-sdk-20.0-linux.tar.gz
         tar -C /usr/local/lib -xvf wasi-sdk-20.0-linux.tar.gz
+    - name: make
+      run: make
     - name: make check
       run: make check
