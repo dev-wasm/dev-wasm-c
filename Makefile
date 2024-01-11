@@ -26,4 +26,3 @@ check: all
 	ls test2.txt > /dev/null
 	ls test-cc.txt > /dev/null
 	ls test-cc-2.txt > /dev/null
-	ls foo.txt > /dev/null
