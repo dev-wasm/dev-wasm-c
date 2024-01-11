@@ -14,7 +14,7 @@ libwasihttp.a: ${lib_objs}
 
 wasi-http: ; git clone https://github.com/WebAssembly/wasi-http; cd wasi-http; git checkout v0.2.0-rc-2023-11-10 ; cp ../client.wit wit/client.wit
 
-gen: wasi-http ; wit-bindgen c ${PWD}/wasi-http/wit -w client ; wit-bindgen c ${PWD}/wasi-http/wit -w proxy
+gen: wasi-http ; wit-bindgen c ${PWD}/wasi-http/wit -w client
 
 main.wasm: gen main.o libwasihttp.a; ${cc} main.o -L. -lwasihttp -o main.wasm
 
@@ -28,7 +28,7 @@ clean: ; rm -f client.c client_component_type.o client.h proxy.h proxy.c *.wasm 
 
 run: main_2023_11_10.component.wasm ; wasmtime -S http --wasm component-model main_2023_11_10.component.wasm
 
-server.wasm: gen ; ${cc} proxy.c server.c -o server.wasm
+server.wasm: gen server.o libwasihttp.a; ${cc} server.o -L. -lwasihttp -o server.wasm
 
 server_2023_11_10.embed.wasm: server.wasm ; wasm-tools component embed ./wasi-http/wit server.wasm -o server_2023_11_10.embed.wasm -w proxy
 
