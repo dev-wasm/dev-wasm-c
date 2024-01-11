@@ -15,7 +15,7 @@ jobs:
         curl https://wasmtime.dev/install.sh -L --output ${INSTALLER}
         chmod a+x ${INSTALLER}
         ${INSTALLER} --version ${WASMTIME_VERSION}
-        cp ${HOME}/.wasmtime/bin/wasmtime /usr/bin/wasmtime
+        sudo cp ${HOME}/.wasmtime/bin/wasmtime /usr/bin/wasmtime
     - name: install wasi-sdk
       run: |
         curl https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-20/wasi-sdk-20.0-linux.tar.gz -L --output wasi-sdk-20.0-linux.tar.gz
