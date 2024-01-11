@@ -19,7 +19,7 @@ jobs:
     - name: install wasi-sdk
       run: |
         curl https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-20/wasi-sdk-20.0-linux.tar.gz -L --output wasi-sdk-20.0-linux.tar.gz
-        tar -C /usr/local/lib -xvf wasi-sdk-20.0-linux.tar.gz
+        sudo tar -C /usr/local/lib -xvf wasi-sdk-20.0-linux.tar.gz
     - name: make
       run: make
     - name: make check
