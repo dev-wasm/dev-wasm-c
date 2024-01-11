@@ -3,7 +3,7 @@ name: C/C++ CI
 on:
   workflow_dispatch:
 
-jobs:
+jobs:    
   build:
     runs-on: ubuntu-latest
     steps:
@@ -26,3 +26,9 @@ jobs:
         make
     - name: make check
       run: make check
+
+    - name: make http
+      working-directory: ./http
+      run: |
+        PATH="/usr/local/lib/wasi-sdk-20.0/bin:${PATH}"
+        make main.wasm server.wasm
