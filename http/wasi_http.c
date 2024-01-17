@@ -72,9 +72,10 @@ void exports_wasi_http_0_2_0_rc_2023_11_10_incoming_handler_handle(exports_wasi_
     wasi_http_0_2_0_rc_2023_11_10_types_own_outgoing_body_t body;
     wasi_http_0_2_0_rc_2023_11_10_types_method_outgoing_response_body(wasi_http_0_2_0_rc_2023_11_10_types_borrow_outgoing_response(res), &body);
 
-    wasi_http_0_2_0_rc_2023_11_10_types_own_response_outparam_t outparam;
     wasi_http_0_2_0_rc_2023_11_10_types_result_own_outgoing_response_error_code_t res_err;
-    wasi_http_0_2_0_rc_2023_11_10_types_static_response_outparam_set(outparam, &res_err);
+    res_err.is_err = false;
+    res_err.val.ok = res;
+    wasi_http_0_2_0_rc_2023_11_10_types_static_response_outparam_set(response_out, &res_err);
 
     wasi_http_0_2_0_rc_2023_11_10_types_own_output_stream_t stream;
     wasi_http_0_2_0_rc_2023_11_10_types_method_outgoing_body_write(wasi_http_0_2_0_rc_2023_11_10_types_borrow_outgoing_body(body), &stream);
@@ -118,7 +119,7 @@ int wasi_http_request(uint8_t method_tag, uint8_t scheme_tag, const char * autho
     wasi_http_0_2_0_rc_2023_11_10_types_own_fields_t headers;
     wasi_http_0_2_0_rc_2023_11_10_types_header_error_t err;
     if (!wasi_http_0_2_0_rc_2023_11_10_types_static_fields_from_list(&headers_list, &headers, &err)) {
-        fprintf(stderr, "Header create failed\n");
+        printf("Header create failed\n");
         return 8;
     }
     wasi_http_0_2_0_rc_2023_11_10_types_method_t method = { .tag = method_tag };
@@ -187,7 +188,6 @@ int wasi_http_request(uint8_t method_tag, uint8_t scheme_tag, const char * autho
     wasi_http_0_2_0_rc_2023_11_10_types_future_incoming_response_drop_own(ret);
 
     wasi_http_0_2_0_rc_2023_11_10_types_own_incoming_response_t resp = result.val.ok.val.ok;
-
     wasi_http_0_2_0_rc_2023_11_10_types_status_code_t code = wasi_http_0_2_0_rc_2023_11_10_types_method_incoming_response_status(wasi_http_0_2_0_rc_2023_11_10_types_borrow_incoming_response(resp));
     response_out->status_code = code;
 

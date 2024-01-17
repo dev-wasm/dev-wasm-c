@@ -1,4 +1,6 @@
-cc := /usr/local/lib/wasi-sdk-20.0/bin/clang
+wasi_sdk := /opt/wasi-sdk
+cc := ${wasi_sdk}/bin/clang
+ar := ${wasi_sdk}/bin/ar
 lib_objs := client.o wasi_http.o
 
 .phony: gen clean run
@@ -10,7 +12,7 @@ default: main.wasm
 	${cc} -c $< -o $@
 
 libwasihttp.a: ${lib_objs}
-	ar r libwasihttp.a ${lib_objs}
+	${ar} cr libwasihttp.a ${lib_objs}
 
 wasi-http: ; git clone https://github.com/WebAssembly/wasi-http; cd wasi-http; git checkout v0.2.0-rc-2023-11-10 ; cp ../client.wit wit/client.wit
 
