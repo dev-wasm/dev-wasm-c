@@ -20,6 +20,13 @@ jobs:
       run: |
         curl https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-20/wasi-sdk-20.0-linux.tar.gz -L --output wasi-sdk-20.0-linux.tar.gz
         sudo tar -C /usr/local/lib -xvf wasi-sdk-20.0-linux.tar.gz
+    - name: install wit-bindgen
+      run: |
+        WIT_VERSION=0.15.0
+        curl https://github.com/bytecodealliance/wit-bindgen/releases/download/wit-bindgen-cli-${WIT_VERSION}/wit-bindgen-v${WIT_VERSION}-x86_64-linux.tar.gz -L --output wit-bindgen-v${WIT_VERSION}-x86_64-linux.tar.gz
+        tar -xvzf wit-bindgen-v${WIT_VERSION}-x86_64-linux.tar.gz
+        cp wit-bindgen-v${WIT_VERSION}-x86_64-linux/wit-bindgen ${LOCATION}/bin/wit-bindgen
+        rm -r wit-bindgen-v${WIT_VERSION}-x86_64-linux*
     - name: make
       run: |
         PATH="/usr/local/lib/wasi-sdk-20.0/bin:${PATH}"
