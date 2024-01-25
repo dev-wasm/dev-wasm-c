@@ -38,5 +38,5 @@ jobs:
     - name: make http
       run: |
         PATH="/usr/local/lib/wasi-sdk-20.0/bin:${PATH}"
-        make 0C http wasi-http
+        make -C http wasi-http
         make -C http main.wasm server.wasm
