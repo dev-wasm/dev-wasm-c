@@ -16,7 +16,7 @@ libwasihttp.a: ${lib_objs}
 
 wasi-http: ; git clone https://github.com/WebAssembly/wasi-http; cd wasi-http; git checkout v0.2.0-rc-2023-11-10 ; cp ../client.wit wit/client.wit; cd ../
 
-gen: wasi-http ; wit-bindgen c ${PWD}/wasi-http/wit -w client
+gen: wasi-http ; wit-bindgen c ./wasi-http/wit -w client
 
 main.wasm: gen main.o libwasihttp.a; ${cc} main.o -L. -lwasihttp -o main.wasm
 
