@@ -7,9 +7,15 @@ lib_objs := client.o wasi_http.o
 
 default: main.wasm
 
-%.o : %.c
-	@echo "Compiling c file into o file"
-	${cc} -c $< -o $@
+# %.o : %.c
+#	@echo "Compiling c file into o file"
+#	${cc} -c $< -o $@
+
+client.o: client.c
+	${cc} -c client.c -o client.o
+
+wasi_http.o: wasi_http.c
+	${cc} -c wasi_http.c -o wasi_http.o
 
 libwasihttp.a: ${lib_objs}
 	${ar} cr libwasihttp.a ${lib_objs}
