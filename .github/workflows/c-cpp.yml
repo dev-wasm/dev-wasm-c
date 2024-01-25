@@ -39,4 +39,5 @@ jobs:
       working-directory: ./http
       run: |
         PATH="/usr/local/lib/wasi-sdk-20.0/bin:${PATH}"
+        make wasi-http
         make main.wasm server.wasm
