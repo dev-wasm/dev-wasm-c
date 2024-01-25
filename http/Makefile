@@ -7,20 +7,14 @@ lib_objs := client.o wasi_http.o
 
 default: main.wasm
 
-# %.o : %.c
-#	@echo "Compiling c file into o file"
-#	${cc} -c $< -o $@
-
-client.o: client.c
-	${cc} -c client.c -o client.o
-
-wasi_http.o: wasi_http.c
-	${cc} -c wasi_http.c -o wasi_http.o
+%.o : %.c
+	@echo "Compiling c file into o file"
+	${cc} -c $< -o $@
 
 libwasihttp.a: ${lib_objs}
 	${ar} cr libwasihttp.a ${lib_objs}
 
-wasi-http: ; git clone https://github.com/WebAssembly/wasi-http; cd wasi-http; git checkout v0.2.0-rc-2023-11-10 ; cp ../client.wit wit/client.wit
+wasi-http: ; git clone https://github.com/WebAssembly/wasi-http; cd wasi-http; git checkout v0.2.0-rc-2023-11-10 ; cp ../client.wit wit/client.wit; cd ../
 
 gen: wasi-http ; wit-bindgen c ${PWD}/wasi-http/wit -w client
 
