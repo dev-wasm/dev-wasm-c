@@ -7,6 +7,11 @@ lib_objs := client.o wasi_http.o
 
 default: main.wasm
 
+
+# Necessary b/c client.c doesn't exist during a make from clean.
+client.o : client.c
+	${cc} -c client.c -o client.o
+
 %.o : %.c
 	@echo "Compiling c file into o file"
 	${cc} -c $< -o $@
