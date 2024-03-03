@@ -25,20 +25,20 @@ gen: wasi-http ; wit-bindgen c ./wasi-http/wit -w client
 
 main.wasm: gen main.o libwasihttp.a; ${cc} main.o -L. -lwasihttp -o main.wasm
 
-main_2023_11_10.embed.wasm: main.wasm ; wasm-tools component embed ./wasi-http/wit main.wasm -o main_2023_11_10.embed.wasm -w client
+main_0_2_0.embed.wasm: main.wasm ; wasm-tools component embed ./wasi-http/wit main.wasm -o main_0_2_0.embed.wasm -w client
 
 wasi_snapshot_preview1.reactor.wasm: ; wget https://github.com/bytecodealliance/wasmtime/releases/download/v18.0.2/wasi_snapshot_preview1.reactor.wasm
 
-main_2023_11_10.component.wasm: main_2023_11_10.embed.wasm wasi_snapshot_preview1.reactor.wasm; wasm-tools component new main_2023_11_10.embed.wasm -o main_2023_11_10.component.wasm --adapt wasi_snapshot_preview1.reactor.wasm
+main_0_2_0.component.wasm: main_0_2_0.embed.wasm wasi_snapshot_preview1.reactor.wasm; wasm-tools component new main_0_2_0.embed.wasm -o main_0_2_0.component.wasm --adapt wasi_snapshot_preview1.reactor.wasm
 
 clean: ; rm -f client.c client_component_type.o client.h proxy.h proxy.c *.wasm *.a; rm -rf wasi-http
 
-run: main_2023_11_10.component.wasm ; wasmtime -S http --wasm component-model main_2023_11_10.component.wasm
+run: main_0_2_0.component.wasm ; wasmtime -S http --wasm component-model main_0_2_0.component.wasm
 
 server.wasm: gen server.o libwasihttp.a; ${cc} server.o -L. -lwasihttp -o server.wasm
 
-server_2023_11_10.embed.wasm: server.wasm ; wasm-tools component embed ./wasi-http/wit server.wasm -o server_2023_11_10.embed.wasm -w proxy
+server_0_2_0.embed.wasm: server.wasm ; wasm-tools component embed ./wasi-http/wit server.wasm -o server_0_2_0.embed.wasm -w proxy
 
-server_2023_11_10.component.wasm: server_2023_11_10.embed.wasm wasi_snapshot_preview1.reactor.wasm; wasm-tools component new server_2023_11_10.embed.wasm -o server_2023_11_10.component.wasm --adapt wasi_snapshot_preview1.reactor.wasm
+server_0_2_0.component.wasm: server_0_2_0.embed.wasm wasi_snapshot_preview1.reactor.wasm; wasm-tools component new server_0_2_0.embed.wasm -o server_0_2_0.component.wasm --adapt wasi_snapshot_preview1.reactor.wasm
 
-run-server: server_2023_11_10.component.wasm ; wasmtime serve -Scommon server_2023_11_10.component.wasm
+run-server: server_0_2_0.component.wasm ; wasmtime serve -Scommon server_0_2_0.component.wasm
