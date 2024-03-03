@@ -1,17 +1,19 @@
-cc := /usr/local/lib/wasi-sdk-20.0/bin/clang
+sdk := /usr/local/lib/wasi-sdk-20.0
+cc := ${sdk}/bin/clang
+cpp := ${sdk}/bin/clang++
 
 .phony: all clean
 
 default: all
 
 main.wasm: main.c
-	clang -o main.wasm main.c
+	${cc} -o main.wasm main.c
 
 run_c: main.wasm
 	wasmtime --dir . main.wasm
 
 main-cc.wasm: main.cc
-	clang++ -o main-cc.wasm main.cc
+	${cpp} -o main-cc.wasm main.cc
 
 run_cc: main-cc.wasm
 	wasmtime --dir . main-cc.wasm

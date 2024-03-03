@@ -5,10 +5,10 @@
 	"PATH": "${containerEnv:PATH}:/usr/local/lib/wasi-sdk-20.0/bin:/usr/local/lib"
     },
     "features": {
-        "devwasm.azurecr.io/dev-wasm/dev-wasm-feature/wasmtime-wasi:0.0.14": {
+        "devwasm.azurecr.io/dev-wasm/dev-wasm-feature/wasmtime-wasi:0.0.15": {
             "version": "20",
-            "wasmtime_version": "v15.0.1",
-            "wit_version": "0.16.0"
+            "wasmtime_version": "v18.0.2",
+            "wit_version": "0.19.2"
 
         },
         "ghcr.io/devcontainers/features/common-utils": {}

@@ -19,7 +19,7 @@ client.o : client.c
 libwasihttp.a: ${lib_objs}
 	${ar} cr libwasihttp.a ${lib_objs}
 
-wasi-http: ; git clone https://github.com/WebAssembly/wasi-http; cd wasi-http; git checkout v0.2.0-rc-2023-11-10 ; cp ../client.wit wit/client.wit; cd ../
+wasi-http: ; git clone https://github.com/WebAssembly/wasi-http; cd wasi-http; git checkout v0.2.0; cp ../client.wit wit/client.wit; cd ../
 
 gen: wasi-http ; wit-bindgen c ./wasi-http/wit -w client
 
@@ -27,7 +27,7 @@ main.wasm: gen main.o libwasihttp.a; ${cc} main.o -L. -lwasihttp -o main.wasm
 
 main_2023_11_10.embed.wasm: main.wasm ; wasm-tools component embed ./wasi-http/wit main.wasm -o main_2023_11_10.embed.wasm -w client
 
-wasi_snapshot_preview1.reactor.wasm: ; wget https://github.com/bytecodealliance/wasmtime/releases/download/v15.0.1/wasi_snapshot_preview1.reactor.wasm
+wasi_snapshot_preview1.reactor.wasm: ; wget https://github.com/bytecodealliance/wasmtime/releases/download/v18.0.2/wasi_snapshot_preview1.reactor.wasm
 
 main_2023_11_10.component.wasm: main_2023_11_10.embed.wasm wasi_snapshot_preview1.reactor.wasm; wasm-tools component new main_2023_11_10.embed.wasm -o main_2023_11_10.component.wasm --adapt wasi_snapshot_preview1.reactor.wasm
 
@@ -41,4 +41,4 @@ server_2023_11_10.embed.wasm: server.wasm ; wasm-tools component embed ./wasi-ht
 
 server_2023_11_10.component.wasm: server_2023_11_10.embed.wasm wasi_snapshot_preview1.reactor.wasm; wasm-tools component new server_2023_11_10.embed.wasm -o server_2023_11_10.component.wasm --adapt wasi_snapshot_preview1.reactor.wasm
 
-run-server: server_2023_11_10.component.wasm ; wasmtime serve server_2023_11_10.component.wasm
+run-server: server_2023_11_10.component.wasm ; wasmtime serve -Scommon server_2023_11_10.component.wasm
