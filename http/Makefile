@@ -31,7 +31,7 @@ wasi_snapshot_preview1.reactor.wasm: ; wget https://github.com/bytecodealliance/
 
 main_0_2_0.component.wasm: main_0_2_0.embed.wasm wasi_snapshot_preview1.reactor.wasm; wasm-tools component new main_0_2_0.embed.wasm -o main_0_2_0.component.wasm --adapt wasi_snapshot_preview1.reactor.wasm
 
-clean: ; rm -f client.c client_component_type.o client.h proxy.h proxy.c *.wasm *.a; rm -rf wasi-http
+clean: ; rm -f client.c *.o client.h proxy.h proxy.c *.wasm *.a; rm -rf wasi-http
 
 run: main_0_2_0.component.wasm ; wasmtime -S http --wasm component-model main_0_2_0.component.wasm
 
