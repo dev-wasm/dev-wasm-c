@@ -43,28 +43,25 @@ void exports_wasi_http_incoming_handler_handle(exports_wasi_http_incoming_handle
         handler(&wasi_request, &wasi_response);
     }
 
-    client_tuple2_field_key_field_value_t headers [] = {
-        {
-            .f0 = {
-                .ptr = (uint8_t*) "Content-type",
-                .len = strlen("Content-type"),
-            },
-            .f1 = {
-                .ptr = (uint8_t*) "text/plain",
-                .len = strlen("text/plain"),
-            },
-        },
-    };
+    client_tuple2_field_key_field_value_t *headers = malloc(sizeof(client_tuple2_field_key_field_value_t) * wasi_response.headers.len);
+    for (int i = 0; i < wasi_response.headers.len; i++) {
+        headers[i].f0.ptr = (uint8_t *)wasi_response.headers.headers[i].name;
+        headers[i].f0.len = strlen(wasi_response.headers.headers[i].name) - 1;
 
+        headers[i].f1.ptr = (uint8_t*)wasi_response.headers.headers[i].value;
+        headers[i].f1.len = strlen(wasi_response.headers.headers[i].value) - 1;
+    }
     client_list_tuple2_field_key_field_value_t header_list = {
         .ptr = headers,
-        .len = 1,
+        .len = wasi_response.headers.len,
     };
 
     wasi_http_types_own_headers_t f;
     wasi_http_types_header_error_t err;
 
     wasi_http_types_static_fields_from_list(&header_list, &f, &err);
+
+    free(headers);
 
     wasi_http_types_own_outgoing_response_t res = wasi_http_types_constructor_outgoing_response(f);
     wasi_http_types_method_outgoing_response_set_status_code(wasi_http_types_borrow_outgoing_response(res), wasi_response.status_code);

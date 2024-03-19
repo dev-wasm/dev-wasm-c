@@ -5,6 +5,19 @@
 void handler_fn(wasi_http_request_t *req, wasi_http_response_t *res) {
     res->status_code = 200;
     sprintf(res->body, "Hello world!\nPath is %s\nAuthority is %s\n", req->path_query, req->authority);
+
+    header_t headers [] = {
+        {
+            .name = "Content-type",
+            .value = "text/plain"
+        },
+        {
+            .name = "Server",
+            .value = "C/WASM"
+        }
+    };
+    res->headers.headers = (header_t*) &headers;
+    res->headers.len = 2;
 }
 
 int main() {
