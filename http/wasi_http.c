@@ -46,10 +46,10 @@ void exports_wasi_http_incoming_handler_handle(exports_wasi_http_incoming_handle
     client_tuple2_field_key_field_value_t *headers = malloc(sizeof(client_tuple2_field_key_field_value_t) * wasi_response.headers.len);
     for (int i = 0; i < wasi_response.headers.len; i++) {
         headers[i].f0.ptr = (uint8_t *)wasi_response.headers.headers[i].name;
-        headers[i].f0.len = strlen(wasi_response.headers.headers[i].name) - 1;
+        headers[i].f0.len = strlen(wasi_response.headers.headers[i].name);
 
         headers[i].f1.ptr = (uint8_t*)wasi_response.headers.headers[i].value;
-        headers[i].f1.len = strlen(wasi_response.headers.headers[i].value) - 1;
+        headers[i].f1.len = strlen(wasi_response.headers.headers[i].value);
     }
     client_list_tuple2_field_key_field_value_t header_list = {
         .ptr = headers,
