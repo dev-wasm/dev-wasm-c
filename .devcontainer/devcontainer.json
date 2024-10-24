@@ -7,10 +7,11 @@
     "onCreateCommand": "apt update",
     "postCreateCommand": "apt install -y make",
     "features": {
-        "devwasm.azurecr.io/dev-wasm/dev-wasm-feature/wasmtime-wasi:0.0.15": {
-            "version": "22",
+        "devwasm.azurecr.io/dev-wasm/dev-wasm-feature/wasmtime-wasi:0.0.16": {
+            "version": "24",
             "wasmtime_version": "v26.0.0",
-            "wit_version": "0.34.0"
+            "wit_version": "0.34.0",
+            "wasm_tools_version": "1.219.1"
         },
         "ghcr.io/devcontainers/features/common-utils": {}
     },

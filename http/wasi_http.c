@@ -45,7 +45,7 @@ void exports_wasi_http_incoming_handler_handle(exports_wasi_http_incoming_handle
         handler(&wasi_request, &wasi_response);
     }
 
-    client_tuple2_field_key_field_value_t *headers = malloc(sizeof(client_tuple2_field_key_field_value_t) * wasi_response.headers.len);
+    client_tuple2_field_name_field_value_t *headers = malloc(sizeof(client_tuple2_field_name_field_value_t) * wasi_response.headers.len);
     for (int i = 0; i < wasi_response.headers.len; i++) {
         headers[i].f0.ptr = (uint8_t *)wasi_response.headers.headers[i].name;
         headers[i].f0.len = strlen(wasi_response.headers.headers[i].name);
@@ -53,7 +53,7 @@ void exports_wasi_http_incoming_handler_handle(exports_wasi_http_incoming_handle
         headers[i].f1.ptr = (uint8_t*)wasi_response.headers.headers[i].value;
         headers[i].f1.len = strlen(wasi_response.headers.headers[i].value);
     }
-    client_list_tuple2_field_key_field_value_t header_list = {
+    client_list_tuple2_field_name_field_value_t header_list = {
         .ptr = headers,
         .len = wasi_response.headers.len,
     };
@@ -103,7 +103,7 @@ void free_response(wasi_http_response_t* response) {
 }
 
 int wasi_http_request(uint8_t method_tag, uint8_t scheme_tag, const char * authority_str, const char* path_query_str, const char* body, wasi_http_response_t* response_out) {
-    client_tuple2_field_key_field_value_t content_type[] = {{
+    client_tuple2_field_name_field_value_t content_type[] = {{
         .f0 = { .ptr = (uint8_t*)"User-agent", .len = 10 },
         .f1 = { .ptr = (uint8_t*)"WASI-HTTP/0.0.1", .len = 15},
     },
@@ -111,7 +111,7 @@ int wasi_http_request(uint8_t method_tag, uint8_t scheme_tag, const char * autho
         .f0 = { .ptr = (uint8_t*)"Content-type", .len = 12 },
         .f1 = { .ptr = (uint8_t*)"application/json", .len = 16},
     }};
-    client_list_tuple2_field_key_field_value_t headers_list = {
+    client_list_tuple2_field_name_field_value_t headers_list = {
         .ptr = &content_type[0],
         .len = 2,
     };
@@ -191,7 +191,7 @@ int wasi_http_request(uint8_t method_tag, uint8_t scheme_tag, const char * autho
     response_out->status_code = code;
 
     wasi_http_types_own_headers_t header_handle = wasi_http_types_method_incoming_response_headers(wasi_http_types_borrow_incoming_response(resp));
-    client_list_tuple2_field_key_field_value_t header_list;
+    client_list_tuple2_field_name_field_value_t header_list;
     wasi_http_types_method_fields_entries(wasi_http_types_borrow_fields(header_handle), &header_list);
 
     response_out->headers.headers = malloc(sizeof(header_t) * header_list.len);
