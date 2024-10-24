@@ -1,4 +1,4 @@
-sdk := /usr/local/lib/wasi-sdk-20.0
+sdk := /usr/local/lib/wasi-sdk-22.0
 cc := ${sdk}/bin/clang
 cpp := ${sdk}/bin/clang++
 
