@@ -2,7 +2,7 @@
     "name": "C/C++ WASM",
     "image": "ubuntu:jammy",
     "remoteEnv": {
-	"PATH": "${containerEnv:PATH}:/usr/local/lib/wasi-sdk-22.0/bin:/usr/local/lib"
+	"PATH": "${containerEnv:PATH}:/usr/local/lib/wasi-sdk-25.0/bin:/usr/local/lib"
     },
     "onCreateCommand": "apt update",
     "postCreateCommand": "apt install -y make",
