@@ -45,7 +45,7 @@ clean: ; rm -f client.c *.o client.h proxy.h proxy.c *.wasm *.a; rm -rf wasi-htt
 
 run: main_0_2_8.component.wasm ; wasmtime -S http --wasm component-model main_0_2_8.component.wasm
 
-server.wasm: gen server.o libwasihttp.a; ${cc} server.o proxy_component_type.o -L. -lwasihttp -o server.wasm
+server.wasm: gen server.o libwasihttp.a; ${cc} server.o proxy_component_type.o client_component_type.o -L. -lwasihttp -o server.wasm
 
 server_0_2_8.embed.wasm: server.wasm ; wasm-tools component embed ./wasi-http/wit server.wasm -o server_0_2_8.embed.wasm -w proxy
 
