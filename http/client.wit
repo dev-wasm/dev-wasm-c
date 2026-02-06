@@ -1,6 +1,6 @@
 // This is a slightly modified version of the wasi-http world to include the
 // wasi::cli/run package as an export, since otherwise the code isn't runnable
-package wasi:http@0.2.2;
+package wasi:http@0.2.8;
 
 /// The `wasi:http/client` world captures what is needed to perform 
 /// HTTP client calls.

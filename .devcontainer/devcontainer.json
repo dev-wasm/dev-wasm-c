@@ -2,16 +2,16 @@
     "name": "C/C++ WASM",
     "image": "ubuntu:jammy",
     "remoteEnv": {
-	"PATH": "${containerEnv:PATH}:/usr/local/lib/wasi-sdk-25.0/bin:/usr/local/lib"
+	"PATH": "${containerEnv:PATH}:/usr/local/lib/wasi-sdk-30.0/bin:/usr/local/lib"
     },
     "onCreateCommand": "apt update",
     "postCreateCommand": "apt install -y make",
     "features": {
         "devwasm.azurecr.io/dev-wasm/dev-wasm-feature/wasmtime-wasi:0.0.16": {
-            "version": "25",
-            "wasmtime_version": "v28.0.0",
-            "wit_version": "0.37.0",
-            "wasm_tools_version": "1.223.0"
+            "version": "30",
+            "wasmtime_version": "v41.0.2",
+            "wit_version": "0.52.0",
+            "wasm_tools_version": "1.244.0"
         },
         "ghcr.io/devcontainers/features/common-utils": {}
     },
