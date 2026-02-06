@@ -3,7 +3,7 @@ cc := ${wasi_sdk}/bin/clang
 ar := ${wasi_sdk}/bin/ar
 lib_objs := client.o wasi_http.o
 
-.phony: gen clean run validate-http-tools test
+.PHONY: gen clean run validate-http-tools test
 
 default: main.wasm
 
@@ -59,7 +59,16 @@ run-server: server_0_2_8.component.wasm ; wasmtime serve -Scommon server_0_2_8.c
 test: main_0_2_8.component.wasm server_0_2_8.component.wasm
 	@echo "Testing HTTP client example..."
 	@echo "Running HTTP client (network requests may fail in CI, but validates WASM execution):"
-	@wasmtime -S http --wasm component-model main_0_2_8.component.wasm || echo "HTTP client execution completed (may have network errors)"
+	@wasmtime -S http --wasm component-model main_0_2_8.component.wasm; \
+	EXIT_CODE=$$?; \
+	if [ $$EXIT_CODE -eq 0 ]; then \
+		echo "✓ HTTP client executed successfully"; \
+	elif [ $$EXIT_CODE -eq 1 ]; then \
+		echo "✓ HTTP client executed (exited with code 1 - likely network error, WASM execution validated)"; \
+	else \
+		echo "✗ HTTP client failed with exit code $$EXIT_CODE"; \
+		exit $$EXIT_CODE; \
+	fi
 	@echo ""
 	@echo "Validating HTTP server example..."
 	@echo "Checking server component is valid:"
