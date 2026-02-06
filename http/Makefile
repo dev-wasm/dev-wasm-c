@@ -3,9 +3,17 @@ cc := ${wasi_sdk}/bin/clang
 ar := ${wasi_sdk}/bin/ar
 lib_objs := client.o wasi_http.o
 
-.phony: gen clean run
+.phony: gen clean run validate-http-tools
 
 default: main.wasm
+
+validate-http-tools:
+	@echo "Validating HTTP toolchain..."
+	@test -d ${wasi_sdk} || (echo "ERROR: wasi-sdk not found" && exit 1)
+	@wit-bindgen --version > /dev/null
+	@wasm-tools --version > /dev/null
+	@wasmtime --version > /dev/null
+	@echo "HTTP toolchain validation complete!"
 
 
 # Necessary b/c client.c doesn't exist during a make from clean.

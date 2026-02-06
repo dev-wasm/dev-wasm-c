@@ -2,9 +2,25 @@ sdk := /usr/local/lib/wasi-sdk-30.0-x86_64-linux/
 cc := ${sdk}/bin/clang
 cpp := ${sdk}/bin/clang++
 
-.phony: all clean
+.phony: all clean validate-environment
 
 default: all
+
+validate-environment:
+	@echo "Validating devcontainer environment setup..."
+	@echo "Checking wasi-sdk-30.0 installation..."
+	@test -d ${sdk} || (echo "ERROR: wasi-sdk-30.0 not found at ${sdk}" && exit 1)
+	@${cc} --version | head -1
+	@echo "Checking wasmtime version..."
+	@wasmtime --version | grep -q "41.0.2" || (echo "WARNING: Expected wasmtime 41.0.2" && wasmtime --version)
+	@echo "Checking wit-bindgen availability..."
+	@which wit-bindgen > /dev/null || (echo "ERROR: wit-bindgen not found" && exit 1)
+	@echo "Checking wasm-tools availability..."
+	@which wasm-tools > /dev/null || (echo "ERROR: wasm-tools not found" && exit 1)
+	@echo "Environment validation complete!"
+
+verify: validate-environment all check
+	@echo "All verification steps passed successfully!"
 
 main.wasm: main.c
 	${cc} -o main.wasm main.c
