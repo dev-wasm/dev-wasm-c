@@ -2,42 +2,62 @@ name: C/C++ CI
 
 on:
   workflow_dispatch:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
 
 jobs:    
   build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: install wasmtime
+    
+    - name: install wasmtime v41.0.2
       run: |
         INSTALLER=./wasmtime-install.sh
-        WASMTIME_VERSION=v15.0.1
+        WASMTIME_VERSION=v41.0.2
         curl https://wasmtime.dev/install.sh -L --output ${INSTALLER}
         chmod a+x ${INSTALLER}
         ${INSTALLER} --version ${WASMTIME_VERSION}
         sudo cp ${HOME}/.wasmtime/bin/wasmtime /usr/bin/wasmtime
-    - name: install wasi-sdk
+        wasmtime --version
+        
+    - name: install wasi-sdk-30
       run: |
-        curl https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-20/wasi-sdk-20.0-linux.tar.gz -L --output wasi-sdk-20.0-linux.tar.gz
-        sudo tar -C /usr/local/lib -xvf wasi-sdk-20.0-linux.tar.gz
-    - name: install wit-bindgen
+        curl https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-30/wasi-sdk-30.0-x86_64-linux.tar.gz -L --output wasi-sdk-30.0-x86_64-linux.tar.gz
+        sudo tar -C /usr/local/lib -xzf wasi-sdk-30.0-x86_64-linux.tar.gz
+        /usr/local/lib/wasi-sdk-30.0-x86_64-linux/bin/clang --version
+        
+    - name: install wit-bindgen v0.52.0
       run: |
-        WIT_VERSION=0.16.0
-        LOCATION=/usr/local
-        curl https://github.com/bytecodealliance/wit-bindgen/releases/download/wit-bindgen-cli-${WIT_VERSION}/wit-bindgen-v${WIT_VERSION}-x86_64-linux.tar.gz -L --output wit-bindgen-v${WIT_VERSION}-x86_64-linux.tar.gz
-        tar -xvzf wit-bindgen-v${WIT_VERSION}-x86_64-linux.tar.gz
-        cp wit-bindgen-v${WIT_VERSION}-x86_64-linux/wit-bindgen ${LOCATION}/bin/wit-bindgen
-        rm -r wit-bindgen-v${WIT_VERSION}-x86_64-linux*
-    - name: make
+        WIT_VERSION=0.52.0
+        curl https://github.com/bytecodealliance/wit-bindgen/releases/download/v${WIT_VERSION}/wit-bindgen-${WIT_VERSION}-x86_64-linux.tar.gz -L --output wit-bindgen.tar.gz
+        tar -xzf wit-bindgen.tar.gz
+        sudo cp wit-bindgen-${WIT_VERSION}-x86_64-linux/wit-bindgen /usr/local/bin/
+        rm -rf wit-bindgen.tar.gz wit-bindgen-${WIT_VERSION}-x86_64-linux
+        wit-bindgen --version
+        
+    - name: install wasm-tools v1.244.0
       run: |
-        PATH="/usr/local/lib/wasi-sdk-20.0/bin:${PATH}"
-        make
-    - name: make check
+        WASM_TOOLS_VERSION=1.244.0
+        curl https://github.com/bytecodealliance/wasm-tools/releases/download/v${WASM_TOOLS_VERSION}/wasm-tools-${WASM_TOOLS_VERSION}-x86_64-linux.tar.gz -L --output wasm-tools.tar.gz
+        tar -xzf wasm-tools.tar.gz
+        sudo cp wasm-tools-${WASM_TOOLS_VERSION}-x86_64-linux/wasm-tools /usr/local/bin/
+        rm -rf wasm-tools.tar.gz wasm-tools-${WASM_TOOLS_VERSION}-x86_64-linux
+        wasm-tools --version
+        
+    - name: validate environment
+      run: make validate-environment
+      
+    - name: build and test main examples
+      run: make all
+      
+    - name: run verification tests
       run: make check
-
-    - name: make http
-      run: |
-        PATH="/usr/local/lib/wasi-sdk-20.0/bin:${PATH}"
-        make -C http wasi-http
-        make -C http gen
-        make -C http main.wasm server.wasm
+      
+    - name: validate http toolchain
+      run: make -C http validate-http-tools
+      
+    - name: build http examples
+      run: make -C http wasi-http gen main.wasm server.wasm
