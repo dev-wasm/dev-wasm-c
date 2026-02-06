@@ -116,7 +116,7 @@ Check your wasmtime version:
 wasmtime --version
 ```
 
-Should output: `wasmtime-cli 41.0.2`
+Should contain: `41.0.2`
 
 ### wit-bindgen or wasm-tools missing
 
