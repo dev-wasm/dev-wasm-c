@@ -3,6 +3,17 @@
 experimental HTTP client library being developed as part of the WASI specification.
 Use at your own risk, things may change in the future.
 
+## libcurl API Shim
+
+**For easy porting:** This directory includes a libcurl-compatible API shim (`curl_shim.h` / `curl_shim.c`) that implements common libcurl easy interface functions. This allows you to port existing libcurl-based code to WASM with minimal changes.
+
+See [LIBCURL_SHIM.md](LIBCURL_SHIM.md) for detailed documentation and examples.
+
+Quick example:
+```sh
+make run-curl-example
+```
+
 ## For developers porting from other HTTP libraries
 
 The `wasi_http_request()` function in `wasi_http.c` provides the main HTTP functionality. See `main.c` for usage examples showing GET, POST, and PUT requests. Key differences from traditional libraries:
