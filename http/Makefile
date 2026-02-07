@@ -71,25 +71,35 @@ test: main_0_2_8.component.wasm server_0_2_8.component.wasm
 	fi
 	@echo ""
 	@echo "Testing HTTP server example..."
-	@echo "Starting server on port 8080..."
-	@wasmtime serve -Scommon server_0_2_8.component.wasm > /tmp/server.log 2>&1 & \
+	@SERVER_LOG=$$(mktemp); \
+	CURL_OUTPUT=$$(mktemp); \
+	wasmtime serve -Scommon server_0_2_8.component.wasm > $$SERVER_LOG 2>&1 & \
 	SERVER_PID=$$!; \
+	cleanup() { \
+		kill $$SERVER_PID 2>/dev/null || true; \
+		wait $$SERVER_PID 2>/dev/null || true; \
+		rm -f $$SERVER_LOG $$CURL_OUTPUT; \
+	}; \
+	trap cleanup EXIT; \
 	echo "Server started with PID $$SERVER_PID"; \
-	sleep 3; \
-	echo "Testing server with curl..."; \
-	if curl -f -s http://localhost:8080/ > /tmp/curl_response.txt 2>&1; then \
-		echo "✓ Server responded successfully"; \
-		echo "Response:"; \
-		cat /tmp/curl_response.txt; \
-		kill $$SERVER_PID 2>/dev/null || true; \
-		wait $$SERVER_PID 2>/dev/null || true; \
-		rm -f /tmp/curl_response.txt /tmp/server.log; \
-	else \
-		echo "✗ Server failed to respond"; \
-		cat /tmp/curl_response.txt 2>/dev/null || true; \
-		cat /tmp/server.log 2>/dev/null || true; \
-		kill $$SERVER_PID 2>/dev/null || true; \
-		wait $$SERVER_PID 2>/dev/null || true; \
-		rm -f /tmp/curl_response.txt /tmp/server.log; \
-		exit 1; \
-	fi
+	echo "Waiting for server to be ready..."; \
+	MAX_RETRIES=10; \
+	RETRY=0; \
+	while [ $$RETRY -lt $$MAX_RETRIES ]; do \
+		if curl -f -s http://localhost:8080/ > $$CURL_OUTPUT 2>&1; then \
+			echo "✓ Server responded successfully after $$RETRY attempts"; \
+			echo "Response:"; \
+			cat $$CURL_OUTPUT; \
+			cleanup; \
+			trap - EXIT; \
+			exit 0; \
+		fi; \
+		RETRY=$$((RETRY + 1)); \
+		sleep 1; \
+	done; \
+	echo "✗ Server failed to respond after $$MAX_RETRIES attempts"; \
+	cat $$CURL_OUTPUT 2>/dev/null || true; \
+	cat $$SERVER_LOG 2>/dev/null || true; \
+	cleanup; \
+	trap - EXIT; \
+	exit 1
