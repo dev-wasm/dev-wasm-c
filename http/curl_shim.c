@@ -5,6 +5,10 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+/* Constants */
+#define MAX_RESPONSE_SIZE (256 * 1024)
+#define MAX_HEADER_LINE_SIZE 2048
+
 /* Internal CURL handle structure */
 typedef struct {
     char *url;
@@ -249,7 +253,7 @@ CURLcode curl_easy_perform(CURL *curl) {
     }
     
     /* Allocate response buffer */
-    char *response_buffer = malloc(256 * 1024);
+    char *response_buffer = malloc(MAX_RESPONSE_SIZE);
     if (!response_buffer) {
         free(scheme);
         free(authority);
@@ -259,7 +263,7 @@ CURLcode curl_easy_perform(CURL *curl) {
     
     wasi_http_response_t response = {
         .body = response_buffer,
-        .body_max_len = 256 * 1024
+        .body_max_len = MAX_RESPONSE_SIZE
     };
     
     /* Make the request */
@@ -280,7 +284,7 @@ CURLcode curl_easy_perform(CURL *curl) {
     /* Call header callback if provided */
     if (handle->header_function && handle->header_data) {
         for (int i = 0; i < response.headers.len; i++) {
-            char header_line[2048];
+            char header_line[MAX_HEADER_LINE_SIZE];
             snprintf(header_line, sizeof(header_line), "%s: %s\r\n",
                      response.headers.headers[i].name,
                      response.headers.headers[i].value);
@@ -294,7 +298,10 @@ CURLcode curl_easy_perform(CURL *curl) {
         }
     }
     
-    /* Call write callback with body */
+    /* Call write callback with body
+     * Note: wasi_http returns null-terminated string responses. This means
+     * binary data or responses with embedded null bytes are not fully supported
+     * by the underlying wasi_http API. This is a known limitation. */
     if (handle->write_function && response.body[0] != '\0') {
         size_t body_len = strlen(response.body);
         size_t written = handle->write_function(response.body, 1, body_len, handle->write_data);
@@ -369,6 +376,10 @@ void curl_easy_reset(CURL *curl) {
         handle->effective_url = NULL;
     }
     
+    if (handle->headers) {
+        curl_slist_free_all(handle->headers);
+    }
+    
     handle->headers = NULL;
     handle->write_data = NULL;
     handle->write_function = default_write_callback;
@@ -408,6 +419,10 @@ struct curl_slist *curl_slist_append(struct curl_slist *list, const char *string
     if (!new_item) return list;
     
     new_item->data = strdup(string);
+    if (!new_item->data) {
+        free(new_item);
+        return list;
+    }
     new_item->next = NULL;
     
     if (!list) {
