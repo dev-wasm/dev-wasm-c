@@ -59,5 +59,8 @@ jobs:
     - name: validate http toolchain
       run: make -C http validate-http-tools
       
+    - name: build http examples
+      run: make -C http wasi-http gen main_0_2_8.component.wasm server_0_2_8.component.wasm
+      
     - name: build and test http examples (including curl shim)
       run: make -C http test
