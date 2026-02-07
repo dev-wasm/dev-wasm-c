@@ -60,4 +60,7 @@ jobs:
       run: make -C http validate-http-tools
       
     - name: build http examples
-      run: make -C http wasi-http gen main.wasm server.wasm
+      run: make -C http wasi-http gen main_0_2_8.component.wasm server_0_2_8.component.wasm
+      
+    - name: run http examples
+      run: make -C http test

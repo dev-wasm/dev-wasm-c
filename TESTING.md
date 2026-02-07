@@ -87,13 +87,25 @@ make server_0_2_8.component.wasm
 
 Expected: Successfully builds HTTP server component.
 
+### Test HTTP Examples
+
+```bash
+cd http
+make test
+```
+
+This will:
+- Run the HTTP client example (may fail if network is unavailable)
+- Start the HTTP server, test it with curl, then stop it
+
 ## Continuous Integration
 
 The GitHub Actions workflow (`.github/workflows/c-cpp.yml`) automatically:
 1. Installs all required tools at specified versions
 2. Validates the environment
-3. Builds all examples
-4. Runs verification tests
+3. Builds all examples (C, C++, and HTTP)
+4. Runs verification tests for all examples
+5. Executes HTTP examples using wasmtime
 
 The workflow runs on:
 - Pull requests to main
