@@ -96,7 +96,7 @@ make test
 
 This will:
 - Run the HTTP client example (may fail if network is unavailable)
-- Validate the HTTP server component
+- Start the HTTP server, test it with curl, then stop it
 
 ## Continuous Integration
 

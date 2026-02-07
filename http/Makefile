@@ -55,7 +55,7 @@ run-server: server_0_2_8.component.wasm ; wasmtime serve -Scommon server_0_2_8.c
 
 # Run HTTP examples in CI/CD for validation
 # The client makes real HTTP requests - will validate execution even if network fails
-# The server validation is done by checking the component can be loaded and inspected
+# The server is started, tested with curl, then stopped
 test: main_0_2_8.component.wasm server_0_2_8.component.wasm
 	@echo "Testing HTTP client example..."
 	@echo "Running HTTP client (network requests may fail in CI, but validates WASM execution):"
@@ -70,6 +70,26 @@ test: main_0_2_8.component.wasm server_0_2_8.component.wasm
 		exit $$EXIT_CODE; \
 	fi
 	@echo ""
-	@echo "Validating HTTP server example..."
-	@echo "Checking server component is valid:"
-	@wasm-tools validate server_0_2_8.component.wasm && echo "✓ Server component is valid"
+	@echo "Testing HTTP server example..."
+	@echo "Starting server on port 8080..."
+	@wasmtime serve -Scommon server_0_2_8.component.wasm > /tmp/server.log 2>&1 & \
+	SERVER_PID=$$!; \
+	echo "Server started with PID $$SERVER_PID"; \
+	sleep 3; \
+	echo "Testing server with curl..."; \
+	if curl -f -s http://localhost:8080/ > /tmp/curl_response.txt 2>&1; then \
+		echo "✓ Server responded successfully"; \
+		echo "Response:"; \
+		cat /tmp/curl_response.txt; \
+		kill $$SERVER_PID 2>/dev/null || true; \
+		wait $$SERVER_PID 2>/dev/null || true; \
+		rm -f /tmp/curl_response.txt /tmp/server.log; \
+	else \
+		echo "✗ Server failed to respond"; \
+		cat /tmp/curl_response.txt 2>/dev/null || true; \
+		cat /tmp/server.log 2>/dev/null || true; \
+		kill $$SERVER_PID 2>/dev/null || true; \
+		wait $$SERVER_PID 2>/dev/null || true; \
+		rm -f /tmp/curl_response.txt /tmp/server.log; \
+		exit 1; \
+	fi
