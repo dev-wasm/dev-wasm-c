@@ -1,7 +1,7 @@
 wasi_sdk := /usr/local/lib/wasi-sdk-30.0-x86_64-linux/
 cc := ${wasi_sdk}/bin/clang
 ar := ${wasi_sdk}/bin/ar
-lib_objs := client.o wasi_http.o http_client.o
+lib_objs := client.o wasi_http.o
 
 .phony: gen clean run validate-http-tools
 
@@ -53,18 +53,11 @@ server_0_2_8.component.wasm: server_0_2_8.embed.wasm wasi_snapshot_preview1.reac
 
 run-server: server_0_2_8.component.wasm ; wasmtime serve -Scommon server_0_2_8.component.wasm
 
-client_example.wasm: gen client_example.o libwasihttp.a; ${cc} client_example.o client_component_type.o -L. -lwasihttp -o client_example.wasm
+# REST API example demonstrating practical HTTP client patterns
+rest_api_example.wasm: gen rest_api_example.o libwasihttp.a; ${cc} rest_api_example.o client_component_type.o -L. -lwasihttp -o rest_api_example.wasm
 
-client_example_0_2_8.embed.wasm: client_example.wasm ; wasm-tools component embed ./wasi-http/wit client_example.wasm -o client_example_0_2_8.embed.wasm -w client
+rest_api_example_0_2_8.embed.wasm: rest_api_example.wasm ; wasm-tools component embed ./wasi-http/wit rest_api_example.wasm -o rest_api_example_0_2_8.embed.wasm -w client
 
-client_example_0_2_8.component.wasm: client_example_0_2_8.embed.wasm wasi_snapshot_preview1.reactor.wasm; wasm-tools component new client_example_0_2_8.embed.wasm -o client_example_0_2_8.component.wasm --adapt wasi_snapshot_preview1.reactor.wasm
+rest_api_example_0_2_8.component.wasm: rest_api_example_0_2_8.embed.wasm wasi_snapshot_preview1.reactor.wasm; wasm-tools component new rest_api_example_0_2_8.embed.wasm -o rest_api_example_0_2_8.component.wasm --adapt wasi_snapshot_preview1.reactor.wasm
 
-run-client-example: client_example_0_2_8.component.wasm ; wasmtime -S http --wasm component-model client_example_0_2_8.component.wasm
-
-url_parse_test.wasm: gen url_parse_test.o libwasihttp.a; ${cc} url_parse_test.o client_component_type.o -L. -lwasihttp -o url_parse_test.wasm
-
-url_parse_test_0_2_8.embed.wasm: url_parse_test.wasm ; wasm-tools component embed ./wasi-http/wit url_parse_test.wasm -o url_parse_test_0_2_8.embed.wasm -w client
-
-url_parse_test_0_2_8.component.wasm: url_parse_test_0_2_8.embed.wasm wasi_snapshot_preview1.reactor.wasm; wasm-tools component new url_parse_test_0_2_8.embed.wasm -o url_parse_test_0_2_8.component.wasm --adapt wasi_snapshot_preview1.reactor.wasm
-
-test-url-parsing: url_parse_test_0_2_8.component.wasm ; wasmtime -S http --wasm component-model url_parse_test_0_2_8.component.wasm
+run-rest-example: rest_api_example_0_2_8.component.wasm ; wasmtime -S http --wasm component-model rest_api_example_0_2_8.component.wasm
