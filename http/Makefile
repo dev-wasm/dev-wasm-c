@@ -87,11 +87,15 @@ test: main_0_2_8.component.wasm server_0_2_8.component.wasm
 	RETRY=0; \
 	while [ $$RETRY -lt $$MAX_RETRIES ]; do \
 		if curl -f -s http://localhost:8080/ > $$CURL_OUTPUT 2>&1; then \
-			echo "✓ Server responded successfully after $$RETRY attempts"; \
+			if [ $$RETRY -eq 0 ]; then \
+				echo "✓ Server responded successfully on first attempt"; \
+			else \
+				echo "✓ Server responded successfully after $$RETRY retries"; \
+			fi; \
 			echo "Response:"; \
 			cat $$CURL_OUTPUT; \
-			cleanup; \
 			trap - EXIT; \
+			cleanup; \
 			exit 0; \
 		fi; \
 		RETRY=$$((RETRY + 1)); \
@@ -100,6 +104,6 @@ test: main_0_2_8.component.wasm server_0_2_8.component.wasm
 	echo "✗ Server failed to respond after $$MAX_RETRIES attempts"; \
 	cat $$CURL_OUTPUT 2>/dev/null || true; \
 	cat $$SERVER_LOG 2>/dev/null || true; \
-	cleanup; \
 	trap - EXIT; \
+	cleanup; \
 	exit 1
