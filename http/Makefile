@@ -2,6 +2,7 @@ wasi_sdk := /usr/local/lib/wasi-sdk-30.0-x86_64-linux/
 cc := ${wasi_sdk}/bin/clang
 ar := ${wasi_sdk}/bin/ar
 lib_objs := client.o wasi_http.o
+memory_flags := -Wl,-z,stack-size=131072 -Wl,--initial-memory=262144
 
 .PHONY: gen clean run validate-http-tools test
 
@@ -33,7 +34,7 @@ gen: wasi-http
 	wit-bindgen c ./wasi-http/wit -w client
 	wit-bindgen c ./wasi-http/wit -w proxy
 
-main.wasm: gen main.o libwasihttp.a; ${cc} -Wl,-z,stack-size=131072 -Wl,--initial-memory=262144 main.o client_component_type.o -L. -lwasihttp -o main.wasm
+main.wasm: gen main.o libwasihttp.a; ${cc} ${memory_flags} main.o client_component_type.o -L. -lwasihttp -o main.wasm
 
 main_0_2_8.embed.wasm: main.wasm ; wasm-tools component embed ./wasi-http/wit main.wasm -o main_0_2_8.embed.wasm -w client
 
@@ -45,7 +46,7 @@ clean: ; rm -f client.c *.o client.h proxy.h proxy.c *.wasm *.a; rm -rf wasi-htt
 
 run: main_0_2_8.component.wasm ; wasmtime -S http --wasm component-model main_0_2_8.component.wasm
 
-server.wasm: gen server.o libwasihttp.a; ${cc} -Wl,-z,stack-size=131072 -Wl,--initial-memory=262144 server.o proxy_component_type.o client_component_type.o -L. -lwasihttp -o server.wasm
+server.wasm: gen server.o libwasihttp.a; ${cc} ${memory_flags} server.o proxy_component_type.o client_component_type.o -L. -lwasihttp -o server.wasm
 
 server_0_2_8.embed.wasm: server.wasm ; wasm-tools component embed ./wasi-http/wit server.wasm -o server_0_2_8.embed.wasm -w proxy
 
