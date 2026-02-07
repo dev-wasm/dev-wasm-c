@@ -60,3 +60,11 @@ client_example_0_2_8.embed.wasm: client_example.wasm ; wasm-tools component embe
 client_example_0_2_8.component.wasm: client_example_0_2_8.embed.wasm wasi_snapshot_preview1.reactor.wasm; wasm-tools component new client_example_0_2_8.embed.wasm -o client_example_0_2_8.component.wasm --adapt wasi_snapshot_preview1.reactor.wasm
 
 run-client-example: client_example_0_2_8.component.wasm ; wasmtime -S http --wasm component-model client_example_0_2_8.component.wasm
+
+url_parse_test.wasm: gen url_parse_test.o libwasihttp.a; ${cc} url_parse_test.o client_component_type.o -L. -lwasihttp -o url_parse_test.wasm
+
+url_parse_test_0_2_8.embed.wasm: url_parse_test.wasm ; wasm-tools component embed ./wasi-http/wit url_parse_test.wasm -o url_parse_test_0_2_8.embed.wasm -w client
+
+url_parse_test_0_2_8.component.wasm: url_parse_test_0_2_8.embed.wasm wasi_snapshot_preview1.reactor.wasm; wasm-tools component new url_parse_test_0_2_8.embed.wasm -o url_parse_test_0_2_8.component.wasm --adapt wasi_snapshot_preview1.reactor.wasm
+
+test-url-parsing: url_parse_test_0_2_8.component.wasm ; wasmtime -S http --wasm component-model url_parse_test_0_2_8.component.wasm
