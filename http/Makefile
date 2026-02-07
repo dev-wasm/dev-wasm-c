@@ -1,7 +1,7 @@
 wasi_sdk := /usr/local/lib/wasi-sdk-30.0-x86_64-linux/
 cc := ${wasi_sdk}/bin/clang
 ar := ${wasi_sdk}/bin/ar
-lib_objs := client.o wasi_http.o
+lib_objs := client.o wasi_http.o http_client.o
 
 .phony: gen clean run validate-http-tools
 
@@ -52,3 +52,11 @@ server_0_2_8.embed.wasm: server.wasm ; wasm-tools component embed ./wasi-http/wi
 server_0_2_8.component.wasm: server_0_2_8.embed.wasm wasi_snapshot_preview1.reactor.wasm; wasm-tools component new server_0_2_8.embed.wasm -o server_0_2_8.component.wasm --adapt wasi_snapshot_preview1.reactor.wasm
 
 run-server: server_0_2_8.component.wasm ; wasmtime serve -Scommon server_0_2_8.component.wasm
+
+client_example.wasm: gen client_example.o libwasihttp.a; ${cc} client_example.o client_component_type.o -L. -lwasihttp -o client_example.wasm
+
+client_example_0_2_8.embed.wasm: client_example.wasm ; wasm-tools component embed ./wasi-http/wit client_example.wasm -o client_example_0_2_8.embed.wasm -w client
+
+client_example_0_2_8.component.wasm: client_example_0_2_8.embed.wasm wasi_snapshot_preview1.reactor.wasm; wasm-tools component new client_example_0_2_8.embed.wasm -o client_example_0_2_8.component.wasm --adapt wasi_snapshot_preview1.reactor.wasm
+
+run-client-example: client_example_0_2_8.component.wasm ; wasmtime -S http --wasm component-model client_example_0_2_8.component.wasm
