@@ -3,7 +3,7 @@ cc := ${wasi_sdk}/bin/clang
 ar := ${wasi_sdk}/bin/ar
 lib_objs := client.o wasi_http.o curl_shim.o
 
-.phony: gen clean run validate-http-tools
+.phony: gen clean run validate-http-tools test
 
 default: main.wasm
 
@@ -70,3 +70,11 @@ curl_example_0_2_8.embed.wasm: curl_example.wasm ; wasm-tools component embed ./
 curl_example_0_2_8.component.wasm: curl_example_0_2_8.embed.wasm wasi_snapshot_preview1.reactor.wasm; wasm-tools component new curl_example_0_2_8.embed.wasm -o curl_example_0_2_8.component.wasm --adapt wasi_snapshot_preview1.reactor.wasm
 
 run-curl-example: curl_example_0_2_8.component.wasm ; wasmtime -S http --wasm component-model curl_example_0_2_8.component.wasm
+
+# Test target for CI - builds and validates all examples including curl shim
+test: validate-http-tools main.wasm server.wasm curl_example.wasm
+	@echo "Validating compiled WASM files..."
+	wasm-tools validate main.wasm
+	wasm-tools validate server.wasm
+	wasm-tools validate curl_example.wasm
+	@echo "All HTTP examples validated successfully!"
