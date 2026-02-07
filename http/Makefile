@@ -2,6 +2,8 @@ wasi_sdk := /usr/local/lib/wasi-sdk-30.0-x86_64-linux/
 cc := ${wasi_sdk}/bin/clang
 ar := ${wasi_sdk}/bin/ar
 lib_objs := client.o wasi_http.o
+# Increase memory limits to prevent out of bounds access with 64KB response buffers
+# Stack: 128KB, Initial memory: 256KB (default is 128KB total which is insufficient)
 memory_flags := -Wl,-z,stack-size=131072 -Wl,--initial-memory=262144
 
 .PHONY: gen clean run validate-http-tools test
