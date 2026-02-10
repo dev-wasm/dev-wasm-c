@@ -2,3 +2,5 @@
 test*.txt
 
 wasmtime-v41.0.2-x86_64-linux/
+*.tar.gz
+wasmtime-install.sh
