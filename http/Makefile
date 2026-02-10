@@ -78,7 +78,7 @@ run-curl-example: curl_example_0_2_8.component.wasm ; wasmtime -S http --wasm co
 # Run HTTP examples in CI/CD for validation
 # The client makes real HTTP requests - will validate execution even if network fails
 # The server is started, tested with curl, then stopped
-test: main_0_2_8.component.wasm server_0_2_8.component.wasm
+test: main_0_2_8.component.wasm curl_example_0_2_8.component.wasm server_0_2_8.component.wasm
 	@echo "Testing HTTP client example..."
 	@echo "Running HTTP client (network requests may fail in CI, but validates WASM execution):"
 	@wasmtime -S http --wasm component-model main_0_2_8.component.wasm; \
@@ -89,6 +89,19 @@ test: main_0_2_8.component.wasm server_0_2_8.component.wasm
 		echo "✓ HTTP client executed (exited with code 1 - likely network error, WASM execution validated)"; \
 	else \
 		echo "✗ HTTP client failed with exit code $$EXIT_CODE"; \
+		exit $$EXIT_CODE; \
+	fi
+	@echo ""
+	@echo "Testing libcurl shim example..."
+	@echo "Running curl_example (network requests may fail in CI, but validates WASM execution):"
+	@wasmtime -S http --wasm component-model curl_example_0_2_8.component.wasm; \
+	EXIT_CODE=$$?; \
+	if [ $$EXIT_CODE -eq 0 ]; then \
+		echo "✓ curl_example executed successfully"; \
+	elif [ $$EXIT_CODE -eq 1 ]; then \
+		echo "✓ curl_example executed (exited with code 1 - likely network error, WASM execution validated)"; \
+	else \
+		echo "✗ curl_example failed with exit code $$EXIT_CODE"; \
 		exit $$EXIT_CODE; \
 	fi
 	@echo ""
