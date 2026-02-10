@@ -1,7 +1,8 @@
 wasi_sdk := /usr/local/lib/wasi-sdk-30.0-x86_64-linux/
 cc := ${wasi_sdk}/bin/clang
 ar := ${wasi_sdk}/bin/ar
-lib_objs := client.o wasi_http.o
+
+lib_objs := client.o wasi_http.o curl_shim.o
 # Increase memory limits to prevent out of bounds access with 64KB response buffers
 # Stack: 128KB, Initial memory: 256KB (default is 128KB total which is insufficient)
 memory_flags := -Wl,-z,stack-size=131072 -Wl,--initial-memory=262144
@@ -55,6 +56,24 @@ server_0_2_8.embed.wasm: server.wasm ; wasm-tools component embed ./wasi-http/wi
 server_0_2_8.component.wasm: server_0_2_8.embed.wasm wasi_snapshot_preview1.reactor.wasm; wasm-tools component new server_0_2_8.embed.wasm -o server_0_2_8.component.wasm --adapt wasi_snapshot_preview1.reactor.wasm
 
 run-server: server_0_2_8.component.wasm ; wasmtime serve -Scommon server_0_2_8.component.wasm
+
+# REST API example demonstrating practical HTTP client patterns
+rest_api_example.wasm: gen rest_api_example.o libwasihttp.a; ${cc} rest_api_example.o client_component_type.o -L. -lwasihttp -o rest_api_example.wasm
+
+rest_api_example_0_2_8.embed.wasm: rest_api_example.wasm ; wasm-tools component embed ./wasi-http/wit rest_api_example.wasm -o rest_api_example_0_2_8.embed.wasm -w client
+
+rest_api_example_0_2_8.component.wasm: rest_api_example_0_2_8.embed.wasm wasi_snapshot_preview1.reactor.wasm; wasm-tools component new rest_api_example_0_2_8.embed.wasm -o rest_api_example_0_2_8.component.wasm --adapt wasi_snapshot_preview1.reactor.wasm
+
+run-rest-example: rest_api_example_0_2_8.component.wasm ; wasmtime -S http --wasm component-model rest_api_example_0_2_8.component.wasm
+
+# libcurl-compatible API example
+curl_example.wasm: gen curl_example.o libwasihttp.a; ${cc} curl_example.o client_component_type.o -L. -lwasihttp -o curl_example.wasm
+
+curl_example_0_2_8.embed.wasm: curl_example.wasm ; wasm-tools component embed ./wasi-http/wit curl_example.wasm -o curl_example_0_2_8.embed.wasm -w client
+
+curl_example_0_2_8.component.wasm: curl_example_0_2_8.embed.wasm wasi_snapshot_preview1.reactor.wasm; wasm-tools component new curl_example_0_2_8.embed.wasm -o curl_example_0_2_8.component.wasm --adapt wasi_snapshot_preview1.reactor.wasm
+
+run-curl-example: curl_example_0_2_8.component.wasm ; wasmtime -S http --wasm component-model curl_example_0_2_8.component.wasm
 
 # Run HTTP examples in CI/CD for validation
 # The client makes real HTTP requests - will validate execution even if network fails
